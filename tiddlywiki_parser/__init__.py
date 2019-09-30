@@ -1,7 +1,11 @@
 import argparse
 import json
+import sys
 
 import bs4
+import requests
+
+TIDDLY_WIKI_URLS = ["https://tiddlywiki.com/", "http://esoverse.tiddlyspot.com/"]
 
 
 class TiddlyWiki(object):
@@ -67,15 +71,37 @@ class Tiddler(object):
         return tiddler_dict
 
 
+def read_file(path):
+    with open(path, "r") as fp:
+        return fp.read()
+
+
+def get_content(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.content
+    print(f"couldn't retreive {url}")
+    sys.exit()
+
+def export(path, export_obj):
+    with open(path, "w") as fp:
+        fp.write(
+            json.dumps(export_obj, sort_keys=True, indent=4, separators=(",", ": "))
+        )
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("path")
+    parser.add_argument("source")
+    parser.add_argument("output", default='/tmp/tiddlywiki.json')
     args = parser.parse_args()
-    path = args.path
-    print(path)
 
-    tiddlywiki = TiddlyWiki.parse_file(path)
-    tiddlywiki.export("/tmp/test.json")
+    if '://' in args.source:
+        raw_content = get_content(args.source)
+    else:
+        raw_content = read_file(args.source)
+
+    tiddlywiki = TiddlyWiki(raw_content)
+    export(args.output, tiddlywiki.export_list())
 
 
 if __name__ == "__main__":
