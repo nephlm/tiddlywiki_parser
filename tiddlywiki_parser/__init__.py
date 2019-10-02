@@ -83,23 +83,29 @@ def get_content(url):
     print(f"couldn't retreive {url}")
     sys.exit()
 
+
+def read(source):
+    if "://" in source:
+        raw_content = get_content(source)
+    else:
+        raw_content = read_file(source)
+    return raw_content
+
+
 def export(path, export_obj):
     with open(path, "w") as fp:
         fp.write(
             json.dumps(export_obj, sort_keys=True, indent=4, separators=(",", ": "))
         )
 
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("source")
-    parser.add_argument("output", default='/tmp/tiddlywiki.json')
+    parser.add_argument("output", default="/tmp/tiddlywiki.json")
     args = parser.parse_args()
 
-    if '://' in args.source:
-        raw_content = get_content(args.source)
-    else:
-        raw_content = read_file(args.source)
-
+    raw_content = read(args.source)
     tiddlywiki = TiddlyWiki(raw_content)
     export(args.output, tiddlywiki.export_list())
 
