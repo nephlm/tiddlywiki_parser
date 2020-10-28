@@ -1,4 +1,4 @@
 {
-    "python.pythonPath": "/home/tkuster/.pyenv/versions/tiddlywiki/bin/python",
+    "python.pythonPath": "/home/tkuster/.pyenv/versions/book/bin/python",
     "python.linting.enabled": true
 }

@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 import sys
 
 import bs4
@@ -50,12 +51,12 @@ class TiddlyWiki(object):
     def export_list(self):
         return [tiddler.dict() for tiddler in self.tiddlers]
 
-    def export(self, path):
-        export_obj = self.export_list()
-        with open(path, "w") as fp:
-            fp.write(
-                json.dumps(export_obj, sort_keys=True, indent=4, separators=(",", ": "))
-            )
+    # def export(self, path):
+    #     export_obj = self.export_list()
+    #     with open(path, "w") as fp:
+    #         fp.write(
+    #             json.dumps(export_obj, sort_keys=True, indent=4, separators=(",", ": "))
+    #         )
 
 
 class Tiddler(object):
@@ -92,22 +93,42 @@ def read(source):
     return raw_content
 
 
-def export(path, export_obj):
-    with open(path, "w") as fp:
-        fp.write(
-            json.dumps(export_obj, sort_keys=True, indent=4, separators=(",", ": "))
-        )
+def export(path, export_obj, save_json=False):
+    if save_json:
+        with open(path, "w") as fp:
+            fp.write(
+                json.dumps(export_obj, sort_keys=True, indent=4, separators=(",", ": "))
+            )
+    else:
+        write_tiddlers(path, export_obj)
+
+
+def write_tiddlers(path, export_obj):
+    for tiddler in export_obj:
+        tiddler_path = os.path.join(path, tiddler["title"] + ".tid")
+        with open(tiddler_path, "w") as fp:
+            for key in tiddler:
+                if key == "text":
+                    continue
+                fp.write(f"{key}:  {tiddler[key]}")
+            fp.write(f'\n{tiddler["text"]}')
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("source")
-    parser.add_argument("output", default="/tmp/tiddlywiki.json")
+    parser.add_argument("source", help="The path to the html file")
+    parser.add_argument("output", help="The path to the output dir (of file).")
+    parser.add_argument(
+        "--json",
+        default=False,
+        action="store_true",
+        help="Save as a json file instead of as individual tiddlers.  output must be a dir.",
+    )
     args = parser.parse_args()
 
     raw_content = read(args.source)
     tiddlywiki = TiddlyWiki(raw_content)
-    export(args.output, tiddlywiki.export_list())
+    export(args.output, tiddlywiki.export_list(), save_json=args.json)
 
 
 if __name__ == "__main__":
