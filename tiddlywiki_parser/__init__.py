@@ -28,6 +28,7 @@ class TiddlyWiki(object):
             if title.startswith("$:/"):
                 return None
         except KeyError:
+            # print(f"No title - {str(div)[:50]}")
             return None
 
         try:
@@ -35,7 +36,8 @@ class TiddlyWiki(object):
             if tags.startswith("$:/"):
                 return None
         except KeyError:
-            return None
+            print(f"No Tags - {str(div)[:100]}")
+            # return None
 
         return div
 
@@ -95,6 +97,8 @@ def read(source):
 
 def export(path, export_obj, save_json=False):
     if save_json:
+        # for tiddler in export_obj:
+        #     print(f'{tiddler["title"]}')
         with open(path, "w") as fp:
             fp.write(
                 json.dumps(export_obj, sort_keys=True, indent=4, separators=(",", ": "))
@@ -110,8 +114,8 @@ def write_tiddlers(path, export_obj):
             for key in tiddler:
                 if key == "text":
                     continue
-                fp.write(f"{key}:  {tiddler[key]}")
-            fp.write(f'\n{tiddler["text"]}')
+                fp.write(f"{key}:  {tiddler[key]}\n")
+            fp.write(f'{tiddler["text"]}')
 
 
 def main():
