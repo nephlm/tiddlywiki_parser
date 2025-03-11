@@ -1,3 +1,10 @@
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta:__legacy__"
+
+[project]
+name = "tiddlywiki_parser"
+version = "0.1.2"
+
+[project.scripts]
+tiddlywiki_parser = "tiddlywiki_parser:main"
