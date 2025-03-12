@@ -8,12 +8,12 @@ from tiddlywiki_parser.tiddlywiki import TiddlyWiki
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("source", help="The path to the html file")
-    parser.add_argument("output", help="The path to the output dir (of file).")
+    parser.add_argument("output", help="The path to the output dir (or file).")
     parser.add_argument(
         "--json",
         default=False,
         action="store_true",
-        help="Save as a json file instead of as individual tiddlers.  output must be a dir.",
+        help="Save as a json file instead of as individual tiddlers.  output must be a file.",
     )
     args = parser.parse_args()
 

@@ -4,9 +4,7 @@ import os
 
 def export(path, export_obj, save_json=False):
     if save_json:
-        # for tiddler in export_obj:
-        #     print(f'{tiddler["title"]}')
-        with open(path, "w") as fp:
+        with open(path, "w", encoding='utf8') as fp:
             fp.write(
                 json.dumps(export_obj, sort_keys=True, indent=4, separators=(",", ": "))
             )
@@ -17,7 +15,7 @@ def export(path, export_obj, save_json=False):
 def write_tiddlers(path, export_obj):
     for tiddler in export_obj:
         tiddler_path = os.path.join(path, tiddler["title"] + ".tid")
-        with open(tiddler_path, "w") as fp:
+        with open(tiddler_path, "w", encoding='utf8') as fp:
             for key in tiddler:
                 if key == "text":
                     continue
