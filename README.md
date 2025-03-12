@@ -1,10 +1,30 @@
 # tiddlywiki_parser
-Parse the tiddler our of a tiddlywiki for backup and git management
+Parse the tiddler our of a tiddlywiki for backup, git management or anything
+else. 
 
 A simple tool to extract the tiddlers from a [Tiddlywiki](https://tiddlywiki.com/) (A personal, non-linear web notebook (aka a wiki in a file)).
 
-Eventually this will also build a tree or in some other way parse the actual tiddlers, but that isn't an immediate need.  
+TODO: Right now tiddlers are basically just dicts and don't do anything to 
+help with data processing.  I'd like to be able to search and extract fields
+and tags at the very least.
 
+## Warning 
+
+This is barely more than a hobby project at this point.  I'm turning it into a 
+package because I'd like to import it in another project, but if you're using 
+a different version of `Tiddlywiki` or use it differently than me, I can't 
+suggest, much less promise or guarantee that it will work.
+
+If you have a case where it doesn't work, create an 
+[Issue](https://github.com/nephlm/tiddlywiki_parser/issues),
+and I'll take a look at it.
+
+## Install
+
+```
+#pip install tiddlywiki_parser # Haven't uploaded to pypi yet
+pip install .
+```
 
 ## Usage
 
@@ -48,3 +68,5 @@ options:
 ## Packaging
 
 This should now be a proper package, and it uses uv for all the packaging stuff.
+
+TODO: Upload to pypi.
