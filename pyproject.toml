@@ -6,23 +6,24 @@ build-backend = "setuptools.build_meta"
 name = "tiddlywiki_parser"
 description = "Library to extract tiddlers from a tiddlywiki file."
 readme = "README.md"
-version = "1.0.0"
+version = "1.1.0"
 requires-python = ">=3.8"
 dependencies = ["beautifulsoup4>=4.8.0", "requests>=2.22.0"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent"
+    "Operating System :: OS Independent",
 ]
 
 [project.urls]
-Homepage  = "https://github.com/nephlm/tiddlywiki_parser"
-Repository  = "https://github.com/nephlm/tiddlywiki_parser"
-Issues  = "https://github.com/nephlm/tiddlywiki_parser/issues"
+Homepage = "https://github.com/nephlm/tiddlywiki_parser"
+Repository = "https://github.com/nephlm/tiddlywiki_parser"
+Issues = "https://github.com/nephlm/tiddlywiki_parser/issues"
 
 
 [project.scripts]
 tiddlywiki_parser = "tiddlywiki_parser:main"
+tiddlywiki_parser_test = "tiddlywiki_parser:test"
 
 [dependency-groups]
 dev = ["ruff>=0.9.10"]

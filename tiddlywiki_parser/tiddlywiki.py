@@ -72,6 +72,7 @@ class TiddlyWiki(object):
         divs = self.bs4.find_all("div")
         for div in divs:
             if self._filter_div(div):
+                print(div["title"])
                 tiddler = Tiddler(div)
                 self.tiddlers.append(tiddler)
         self.tiddlers = sorted(self.tiddlers, key=lambda t: t.attrs["title"])
@@ -88,3 +89,48 @@ class TiddlyWiki(object):
         if not self.tiddlers:
             self.parse()
         return [tiddler.dict() for tiddler in self.tiddlers]
+
+    def remake(self, delete_list: list[str]) -> str:
+        """
+        Will remake a tiddlywiki html content from the parsed data.
+
+        * Any changes made to the tiddler object will be reflected in the
+            new tiddlywiki
+        * Any Tiddler (identified by title) in the delete list will be
+            removed from the resulting html content.
+
+        NOTE: Does not handle changing the title.  To do this add a new tiddler to
+            self.tiddlers and pass the old title in the `delete_list`
+
+        Args:
+            delete_list: list of tiddler titles that should be removed from the
+                new tiddlywiki.
+
+        Returns:
+            A string representing a html file, modified by changes made to self.tiddlers
+            and the titles passed in to be deleted.
+        """
+        if not self.tiddlers:
+            raise RuntimeError("Can't remake a tiddlywiki until one has been parsed.")
+
+        for tiddler in self.tiddlers:
+            title = tiddler.div["title"]
+            if not title:
+                raise RuntimeError("Tiddler has no title")
+
+            orig_tiddler = self.bs4.find("div", attrs={"title": title})
+            if not orig_tiddler:
+                # print(tiddler.dict())
+                assert orig_tiddler
+
+            if title in delete_list:
+                orig_tiddler.decompose()
+                print(f'Tiddler "{title}" removed.')
+            else:
+                new_tiddler = self.bs4.new_tag("div", **tiddler.attrs)
+                new_tiddler.append(bs4.BeautifulSoup(tiddler.raw_text, "html.parser"))
+                # print(orig_tiddler)
+                orig_tiddler.replace_with(new_tiddler)
+                print(f'Tiddler "{title}" replaced.')
+
+        return str(self.bs4)

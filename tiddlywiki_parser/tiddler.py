@@ -13,6 +13,7 @@ class Tiddler(object):
 
         self.attrs = div.attrs
         self.text = div.text
+        self.raw_text = div.decode_contents() 
 
     def dict(self) -> dict:
         tiddler_dict = self.attrs.copy()

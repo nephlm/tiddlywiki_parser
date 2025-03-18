@@ -22,5 +22,16 @@ def main():
     writers.export(args.output, tiddlywiki.export_list(), save_json=args.json)
 
 
+def test():
+    print("test being called")
+    # currently being used to test remake command, but may change without notice.
+    content = readers.read("https://nephlm.github.io/tw/gods-reborn.html")
+    wiki = TiddlyWiki(content)
+    new_wiki = wiki.remake(["Toe Market"])
+    with open("tests/out.html", "w", encoding="utf8") as f:
+        f.write(new_wiki)
+    print("test finished")
+
+
 if __name__ == "__main__":
     main()

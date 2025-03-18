@@ -22,8 +22,7 @@ and I'll take a look at it.
 ## Install
 
 ```
-#pip install tiddlywiki_parser # Haven't uploaded to pypi yet
-pip install .
+pip install tiddlywiki_parser 
 ```
 
 ## Usage
@@ -41,7 +40,11 @@ writers.export('/path/to/destination/file.json, tiddlywiki.export_list(), save_j
 * `readers.read()` can also take a url.
 * `TiddlyWiki.tiddlers` is a list of all the Tiddler objects.
 * `TiddlyWiki.export_list()` is the same but converted to dicts.
-* `TiddlyWiki.parse()` parsesthe file.  It is run automatically under normal circumstances.
+* `TiddlyWiki.parse()` parses the file.  It is run automatically under normal circumstances.
+* `TiddlyWiki.remake(delete_list=['title1', 'title2'])`
+  * Builds a new tiddlywiki deleting the specified titles, and with any changes 
+  made to tiddlers.  Must change raw_text, which is html, not text, which is a 
+  clean string. Titles cannot be changed.
 * `Tiddler.dict()` returns the dict version of the Tiddler object.
 * `writers.export()` will write the tiddlywiki either as individual files or a s a json file. 
 
@@ -69,4 +72,3 @@ options:
 
 This should now be a proper package, and it uses uv for all the packaging stuff.
 
-TODO: Upload to pypi.
