@@ -1,4 +1,6 @@
 import argparse
+import datetime
+from hmac import new
 from pathlib import Path
 
 import tiddlywiki_parser.readers as readers
@@ -27,22 +29,30 @@ def test():
     print("test being called")
     # currently being used to test remake command, but may change without notice.
     content = readers.read("examples/esoverse.html")
-    fp = Path("examples/esoverse.html")
-    content = fp.read_text(encoding="utf8")
     # content = readers.read("https://nephlm.github.io/tw/gods-reborn.html")
-    # fp = Path("examples/gods-reborn.html")
-    # fp.write_text(content, "utf8")
+    if isinstance(content, bytes):
+        content.encode("utf8")
+
+    assert isinstance(content, str)
 
     wiki = TiddlyWiki(content)
-    wiki.test()
-    assert False
+    # wiki.test()
+    delete_list = []
     for tiddler in wiki.tiddlers:
-        if tiddler.title == "Wave Organ":
-            tiddler.text = "TEST OVERWRITE"
-    new_wiki = wiki.remake(["Toe Market"])
-    fp = Path("tests/out.html")
-    fp.write_text(new_wiki, "utf8")
-    print(f"wrote {str(fp)}")
+        if tiddler.title == "Welcome":
+            tiddler["version"] = "Player's"
+        elif tiddler.title == "generation_timestamp":
+            now = datetime.datetime.now()
+            tiddler["timestamp"] = now.isoformat()
+        elif tiddler.title == "xxtest public":
+            tiddler.text = "public test \n\n<hr>\n\n public again<hr>"
+        if tiddler.has_tag("private"):
+            delete_list.append(tiddler.title)
+    # new_wiki = wiki.remake(delete_list)
+    print(wiki.export_list())
+    # fp = Path("tests/out.html")
+    # fp.write_text(new_wiki, "utf8")
+    # print(f"wrote {str(fp)}")
 
     print("test finished")
 

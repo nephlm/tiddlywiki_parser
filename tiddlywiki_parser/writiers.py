@@ -1,23 +1,24 @@
 import json
-import os
+from pathlib import Path
 
 
 def export(path, export_obj, save_json=False):
     if save_json:
-        with open(path, "w", encoding='utf8') as fp:
-            fp.write(
-                json.dumps(export_obj, sort_keys=True, indent=4, separators=(",", ": "))
-            )
+        fp = Path(path)
+        # with open(path, "w", encoding='utf8') as fp:
+        fp.write_text(
+            json.dumps(export_obj, sort_keys=True, indent=4, separators=(",", ": ")),
+            encoding="utf8",
+        )
     else:
         write_tiddlers(path, export_obj)
 
 
 def write_tiddlers(path, export_obj):
     for tiddler in export_obj:
-        tiddler_path = os.path.join(path, tiddler["title"] + ".tid")
-        with open(tiddler_path, "w", encoding='utf8') as fp:
-            for key in tiddler:
-                if key == "text":
-                    continue
-                fp.write(f"{key}:  {tiddler[key]}\n")
-            fp.write(f"{tiddler['text']}")
+        tld_path = Path(path) / f"{tiddler['title']}.tid"
+        for key in tiddler:
+            if key == "text":
+                continue
+            tld_path.write_text(f"{key}:  {tiddler[key]}\n", encoding="utf8")
+        tld_path.write_text(f"{tiddler['text']}", encoding="utf8")
