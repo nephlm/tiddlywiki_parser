@@ -2,22 +2,24 @@
 Parse the tiddler our of a tiddlywiki for backup, git management or anything
 else. 
 
-A simple tool to extract the tiddlers from a [Tiddlywiki](https://tiddlywiki.com/) (A personal, non-linear web notebook (aka a wiki in a file)).
+A simple tool to extract the tiddlers from a single file  
+[Tiddlywiki](https://tiddlywiki.com/) (A personal, non-linear 
+web notebook (aka a wiki in a file)).
 
-TODO: Right now tiddlers are basically just dicts and don't do anything to 
-help with data processing.  I'd like to be able to search and extract fields
-and tags at the very least.
 
 ## Warning 
 
-This is barely more than a hobby project at this point.  I'm turning it into a 
-package because I'd like to import it in another project, but if you're using 
-a different version of `Tiddlywiki` or use it differently than me, I can't 
-suggest, much less promise or guarantee that it will work.
+This is barely more than a hobby project at this point.  I'm turning 
+it into a package because I'd like to import it in another project, 
+but if you're using a different version of `Tiddlywiki` 
+or use it differently than me, I can't suggest, 
+much less promise or guarantee that it will work.
 
 If you have a case where it doesn't work, create an 
 [Issue](https://github.com/nephlm/tiddlywiki_parser/issues),
 and I'll take a look at it.
+
+
 
 ## Install
 
@@ -43,10 +45,27 @@ writers.export('/path/to/destination/file.json, tiddlywiki.export_list(), save_j
 * `TiddlyWiki.parse()` parses the file.  It is run automatically under normal circumstances.
 * `TiddlyWiki.remake(delete_list=['title1', 'title2'])`
   * Builds a new tiddlywiki deleting the specified titles, and with any changes 
-  made to tiddlers.  Must change raw_text, which is html, not text, which is a 
-  clean string. Titles cannot be changed.
+  made to tiddlers.   Titles cannot be changed.
 * `Tiddler.dict()` returns the dict version of the Tiddler object.
 * `writers.export()` will write the tiddlywiki either as individual files or a s a json file. 
+
+## Limitations
+
+tiddlywiki 5.2.0 changed how tiddlers are stored.  v1.x only deals with 
+tiddlywiki files that are pre-5.2.0.  Hopefully v2.x can deal 
+with pre- and post-5.2.0.  
+
+tiddlywiki does allow storing tiddlers 
+in both the old and new form in the same file, this library doesn't 
+handle that case. 
+
+Only handles parsing single file tiddlywiki files. 
+
+`remake` is highly experimental and doesn't deal with:
+
+* adding a new tiddler
+* renaming tiddlers
+* probably a bunch of other cases. 
 
 ## Command Line 
 
@@ -65,7 +84,7 @@ options:
               must be a dir.
 ```
 
-`source` can be either a local file or a url.  
+`source` can be either a local file or an url.  
 `output` is the where the data should be written.  It's either a directory for a writing individual files or a json file if `--json` is specified.
 
 ## Packaging

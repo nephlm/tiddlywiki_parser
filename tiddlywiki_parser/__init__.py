@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 
 import tiddlywiki_parser.readers as readers
 import tiddlywiki_parser.writiers as writers
@@ -25,11 +26,24 @@ def main():
 def test():
     print("test being called")
     # currently being used to test remake command, but may change without notice.
-    content = readers.read("https://nephlm.github.io/tw/gods-reborn.html")
+    content = readers.read("examples/esoverse.html")
+    fp = Path("examples/esoverse.html")
+    content = fp.read_text(encoding="utf8")
+    # content = readers.read("https://nephlm.github.io/tw/gods-reborn.html")
+    # fp = Path("examples/gods-reborn.html")
+    # fp.write_text(content, "utf8")
+
     wiki = TiddlyWiki(content)
+    wiki.test()
+    assert False
+    for tiddler in wiki.tiddlers:
+        if tiddler.title == "Wave Organ":
+            tiddler.text = "TEST OVERWRITE"
     new_wiki = wiki.remake(["Toe Market"])
-    with open("tests/out.html", "w", encoding="utf8") as f:
-        f.write(new_wiki)
+    fp = Path("tests/out.html")
+    fp.write_text(new_wiki, "utf8")
+    print(f"wrote {str(fp)}")
+
     print("test finished")
 
 
