@@ -57,7 +57,7 @@ with pre- and post-5.2.0.
 
 tiddlywiki does allow storing tiddlers 
 in both the old and new form in the same file, this library doesn't 
-handle that case. 
+handle that case (or any sort of modifying pre 5.2.0 wikis). 
 
 Only handles parsing single file tiddlywiki files. 
 
@@ -65,6 +65,7 @@ Only handles parsing single file tiddlywiki files.
 
 * adding a new tiddler
 * renaming tiddlers
+* pre-5.2.0 wikis
 * probably a bunch of other cases. 
 
 ## Command Line 
