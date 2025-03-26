@@ -19,7 +19,12 @@ class TiddlyWiki(object):
         self.content = content
         self.bs4 = None  # Beautiful Soup instance
         self.tiddlers: list = []
+        self._system_tiddlers = []
         self.parse()
+
+    @property
+    def system_tiddlers(self):
+        return tuple(self._system_tiddlers.copy())
 
     @classmethod
     def parse_file(cls, path: str) -> Self:
@@ -35,7 +40,6 @@ class TiddlyWiki(object):
         with open(path, "r", encoding="utf8") as fp:
             self = cls(fp.read())
             return self
-
 
     def _get_json_script_stores(self, bs4):
         """Return a list of bs4 objects for each json store in the wiki."""
@@ -70,24 +74,30 @@ class TiddlyWiki(object):
         which store they came from.
         """
         tiddlers = []
+        system_tiddlers = []
         for _, tiddler_list in self._read_json_store_content(bs4):
             for tiddler_dict in tiddler_list:
                 tiddler = Tiddler(tiddler_dict)
                 if include_system or not tiddler.is_system():
                     print(tiddler.title)
                     tiddlers.append(tiddler)
-        return tiddlers
+                if tiddler.is_system():
+                    system_tiddlers.append(tiddler)
+        return tiddlers, system_tiddlers
 
     def _get_div_tiddlers(self, bs4, include_system=False) -> list[DivTiddler]:
         store_area = bs4.find("div", id="storeArea")
         tiddlers = []
+        system_tiddlers = []
         divs = store_area.find_all("div")
         for div in divs:
             tiddler = DivTiddler(div)
             if include_system or not tiddler.is_system():
                 print(tiddler.title)
                 tiddlers.append(tiddler)
-        return tiddlers
+            if tiddler.is_system():
+                system_tiddlers.append(tiddler)
+        return tiddlers, system_tiddlers
 
     def parse(self) -> list[Tiddler]:
         """
@@ -98,11 +108,11 @@ class TiddlyWiki(object):
         """
         self.legacy = False
         self.bs4 = bs4.BeautifulSoup(self.content, "html.parser")
-        self.tiddlers = self._get_json_tiddlers(self.bs4)
+        self.tiddlers, self._system_tiddlers = self._get_json_tiddlers(self.bs4)
         if not self.tiddlers:
             # pre 5.2.0 div based tiddler fall back to old method.
             self.legacy = True
-            self.tiddlers = self._get_div_tiddlers(self.bs4)
+            self.tiddlers, self._system_tiddlers = self._get_div_tiddlers(self.bs4)
         self.tiddlers = sorted(self.tiddlers, key=lambda t: t.title)
         return self.tiddlers
 
@@ -173,6 +183,4 @@ class TiddlyWiki(object):
             # I have a deadline.
             store.append(overwrite_str.replace("ZZZu003cAAA", r"\u003C"))
 
-
         return str(new_bs4)
-
